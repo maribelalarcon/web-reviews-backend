@@ -1,23 +1,36 @@
 const express = require("express");
 const router = express.Router();
+const Review = require("../db/review");
+const db = require("../db/db");
 
-router.get("/", (req, res) => {
-  res.send("Hello");
+router.get("/", async (req, res) => {
+  const client = await db.getClient();
+  const review = await Review.get(client);
+  res.send(review);
 });
 
-router.get("/:id", (req, res) => {
-  res.send("Hello");
+router.get("/:id", async (req, res) => {
+  const client = await db.getClient();
+  const review = await Review.getById(client, req.params.id);
+  res.send(review);
 });
 
-router.post("/", (req, res) => {
-  res.send("Got a POST request");
+router.post("/", async (req, res) => {
+  const client = await db.getClient();
+  await Review.create(client, req.body);
+  res.send(req.body);
 });
 
-router.patch("/:id", (req, res) => {
-  res.send("Update");
+router.put("/:id", async (req, res) => {
+  const client = await db.getClient();
+  await Review.update(client, req.body, req.params.id);
+  res.send(req.body);
 });
 
-router.delete("/:id", (req, res) => {
-  res.send("Delete user");
+router.delete("/:id", async (req, res) => {
+  const client = await db.getClient();
+  await Review.remove(client, req.params.id);
+  res.send("Delete Review");
 });
+
 module.exports = router;
